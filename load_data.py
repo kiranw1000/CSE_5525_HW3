@@ -33,6 +33,7 @@ class T5Dataset(Dataset):
         self.queries = []
         self.tokenizer: T5TokenizerFast = T5TokenizerFast.from_pretrained('google-t5/t5-small')
         self.extra_id = "id0"
+        self.extra_token = self.tokenizer.convert_tokens_to_ids(self.extra_id)
         self.process_data(data_folder, split, self.tokenizer)
 
     def process_data(self, data_folder, split, tokenizer):
@@ -43,14 +44,14 @@ class T5Dataset(Dataset):
         for i,line in enumerate(lines):
             self.nl.append(tokenizer(line, return_tensors='pt'))
             if split != "test" and split != "mini_test":
-                self.queries.append(tokenizer(torch.cat(torch.tensor([[self.extra_id]]),queries[i]), return_tensors='pt'))
+                self.queries.append(tokenizer(self.extra_id+queries[i], return_tensors='pt'))
     
     def __len__(self):
         return len(self.nl)
 
     def __getitem__(self, idx):
         if self.split == "test" or self.split == "mini_test":
-            return self.nl[idx], torch.tensor([[self.extra_id]])
+            return self.nl[idx], torch.tensor([[self.extra_token]])
         return self.nl[idx], self.queries[idx]
 
 def normal_collate_fn(batch):
