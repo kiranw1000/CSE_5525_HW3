@@ -2,7 +2,6 @@ from train_t5 import *
 from utils import load_pickle
 
 DEVICE = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-DEVICE = torch.device('mps') if torch.backends.mps.is_available() else DEVICE
 
 if __name__ == '__main__':
     args = get_args()
