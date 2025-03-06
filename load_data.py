@@ -32,7 +32,7 @@ class T5Dataset(Dataset):
         self.sql = []
         self.queries = []
         self.tokenizer: T5TokenizerFast = T5TokenizerFast.from_pretrained('google-t5/t5-small')
-        self.extra_id = self.tokenizer._extra_ids[0]
+        self.extra_id = "id0"
         self.process_data(data_folder, split, self.tokenizer)
 
     def process_data(self, data_folder, split, tokenizer):
