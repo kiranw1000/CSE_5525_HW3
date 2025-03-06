@@ -29,6 +29,7 @@ class T5Dataset(Dataset):
         self.data_folder = data_folder
         self.split = split
         self.nl = []
+        self.sql = []
         self.queries = []
         self.tokenizer: T5TokenizerFast = T5TokenizerFast.from_pretrained('google-t5/t5-small')
         self.process_data(data_folder, split, self.tokenizer)
@@ -37,6 +38,7 @@ class T5Dataset(Dataset):
         lines = load_lines(os.path.join(data_folder, f"{split}.nl"))
         if split != "test" and split != "mini_test":
             queries = load_lines(os.path.join(data_folder, f"{split}.sql"))
+            self.sql = queries
         for i,line in enumerate(lines):
             self.nl.append(tokenizer(line, return_tensors='pt'))
             if split != "test" and split != "mini_test":

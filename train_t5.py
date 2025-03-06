@@ -174,7 +174,7 @@ def eval_epoch(args, model, dev_loader, gt_sql_pth, model_sql_path, gt_record_pa
             
     dev_loss = total_loss / total_tokens
     save_queries_and_records(pred_list, model_sql_path, model_record_path)
-    save_queries_and_records(dev_loader.dataset.queries, gt_sql_pth, gt_record_path)
+    save_queries_and_records(dev_loader.dataset.sql, gt_sql_pth, gt_record_path)
     sql_em, record_em, record_F1, error_msgs = compute_metrics(gt_sql_pth, model_sql_path, gt_record_path, model_record_path)
     return dev_loss, record_em, record_F1, sql_em, len(error_msgs) / len(pred_list)
         
