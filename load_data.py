@@ -32,6 +32,7 @@ class T5Dataset(Dataset):
         self.sql = []
         self.queries = []
         self.tokenizer: T5TokenizerFast = T5TokenizerFast.from_pretrained('google-t5/t5-small')
+        self.extra_id = self.tokenizer._extra_ids[0]
         self.process_data(data_folder, split, self.tokenizer)
 
     def process_data(self, data_folder, split, tokenizer):
@@ -42,14 +43,14 @@ class T5Dataset(Dataset):
         for i,line in enumerate(lines):
             self.nl.append(tokenizer(line, return_tensors='pt'))
             if split != "test" and split != "mini_test":
-                self.queries.append(tokenizer(queries[i], return_tensors='pt'))
+                self.queries.append(tokenizer(torch.cat(torch.tensor([[self.extra_id]]),queries[i]), return_tensors='pt'))
     
     def __len__(self):
         return len(self.nl)
 
     def __getitem__(self, idx):
         if self.split == "test" or self.split == "mini_test":
-            return self.nl[idx], None
+            return self.nl[idx], torch.tensor([[self.extra_id]])
         return self.nl[idx], self.queries[idx]
 
 def normal_collate_fn(batch):
@@ -92,8 +93,7 @@ def test_collate_fn(batch):
     temp = [batch[i][0]['input_ids'].T for i in range(len(batch))]
     encoder_ids = torch.squeeze(pad_sequence(temp, padding_value=PAD_IDX)).mT
     encoder_mask = torch.squeeze(pad_sequence([batch[i][0]['attention_mask'].T for i in range(len(batch))], padding_value=0)).mT
-    print(batch[0][1])
-    initial_decoder_inputs = [batch[i][1]['input_ids'][0,0] for i in range(len(batch))]
+    initial_decoder_inputs = [batch[i][1] for i in range(len(batch))]
     return encoder_ids, encoder_mask, initial_decoder_inputs
 
 def get_dataloader(batch_size, split):
