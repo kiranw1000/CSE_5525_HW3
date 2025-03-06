@@ -111,6 +111,8 @@ def train_epoch(args, model, train_loader, optimizer, scheduler):
         decoder_input = decoder_input.to(DEVICE)
         decoder_targets = decoder_targets.to(DEVICE)
         
+        model = model.to(DEVICE)
+        print("item")
 
         logits = model(
             input_ids=encoder_input,
