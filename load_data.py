@@ -92,6 +92,7 @@ def test_collate_fn(batch):
     temp = [batch[i][0]['input_ids'].T for i in range(len(batch))]
     encoder_ids = torch.squeeze(pad_sequence(temp, padding_value=PAD_IDX)).mT
     encoder_mask = torch.squeeze(pad_sequence([batch[i][0]['attention_mask'].T for i in range(len(batch))], padding_value=0)).mT
+    print(batch[0][1]['input_ids'][0,0])
     initial_decoder_inputs = [batch[i][1]['input_ids'][0,0] for i in range(len(batch))]
     return encoder_ids, encoder_mask, initial_decoder_inputs
 
@@ -99,7 +100,6 @@ def get_dataloader(batch_size, split):
     data_folder = 'data'
     dset = T5Dataset(data_folder, split)
     shuffle = split == "train" or split == "mini_train"
-    print(split)
     collate_fn = normal_collate_fn if split != "test" and split!="mini_test" else test_collate_fn
 
     dataloader = DataLoader(dset, batch_size=batch_size, shuffle=shuffle, collate_fn=collate_fn)
