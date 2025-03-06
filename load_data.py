@@ -71,10 +71,10 @@ def normal_collate_fn(batch):
         * initial_decoder_inputs: The very first input token to be decoder (only to be used in evaluation)
     '''
     temp = [batch[i][0]['input_ids'].T for i in range(len(batch))]
-    encoder_ids = torch.squeeze(pad_sequence(temp, padding_value=PAD_IDX)).mT
-    encoder_mask = torch.squeeze(pad_sequence([batch[i][0]['attention_mask'].T for i in range(len(batch))], padding_value=0)).mT
-    decoder_inputs = torch.squeeze(pad_sequence([batch[i][1]['input_ids'].T for i in range(len(batch))], padding_value=PAD_IDX)).mT
-    decoder_targets = torch.squeeze(pad_sequence([batch[i][1]['input_ids'].T for i in range(len(batch))], padding_value=PAD_IDX)).mT
+    encoder_ids = torch.squeeze(pad_sequence(temp, padding_value=PAD_IDX),-1).mT
+    encoder_mask = torch.squeeze(pad_sequence([batch[i][0]['attention_mask'].T for i in range(len(batch))], padding_value=0), -1).mT
+    decoder_inputs = torch.squeeze(pad_sequence([batch[i][1]['input_ids'].T for i in range(len(batch))], padding_value=PAD_IDX), -1).mT
+    decoder_targets = torch.squeeze(pad_sequence([batch[i][1]['input_ids'].T for i in range(len(batch))], padding_value=PAD_IDX) ,-1).mT
     initial_decoder_inputs = [batch[i][1]['input_ids'][0,0] for i in range(len(batch))]
     return encoder_ids, encoder_mask, decoder_inputs, decoder_targets, initial_decoder_inputs
 
@@ -92,8 +92,8 @@ def test_collate_fn(batch):
         * initial_decoder_inputs: The very first input token to be decoder (only to be used in evaluation)
     '''
     temp = [batch[i][0]['input_ids'].T for i in range(len(batch))]
-    encoder_ids = torch.squeeze(pad_sequence(temp, padding_value=PAD_IDX)).mT
-    encoder_mask = torch.squeeze(pad_sequence([batch[i][0]['attention_mask'].T for i in range(len(batch))], padding_value=0)).mT
+    encoder_ids = torch.squeeze(pad_sequence(temp, padding_value=PAD_IDX), -1).mT
+    encoder_mask = torch.squeeze(pad_sequence([batch[i][0]['attention_mask'].T for i in range(len(batch))], padding_value=0), -1).mT
     initial_decoder_inputs = torch.tensor([[batch[i][1] for i in range(len(batch))]]).mT
     return encoder_ids, encoder_mask, initial_decoder_inputs
 
