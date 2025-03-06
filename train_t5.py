@@ -154,6 +154,8 @@ def eval_epoch(args, model, dev_loader, gt_sql_pth, model_sql_path, gt_record_pa
         encoder_mask = encoder_mask.to(DEVICE)
         decoder_input = decoder_input.to(DEVICE)
         decoder_targets = decoder_targets.to(DEVICE)
+        
+        model = model.to(DEVICE)
 
         logits = model(
             input_ids=encoder_input,
