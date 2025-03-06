@@ -79,7 +79,7 @@ def save_queries_and_records(sql_queries: List[str], sql_path: str, record_path:
 
 def read_queries(sql_path: str):
     with open(sql_path, 'r') as f:
-        qs = [q.strip().replace("id0","") for q in f.readlines()]
+        qs = [q.strip().replace("id0","").replace('<pad>','').replace('</s>','') for q in f.readlines()]
     return qs
 
 def compute_records(processed_qs: List[str]):
