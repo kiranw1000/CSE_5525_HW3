@@ -147,6 +147,9 @@ def eval_epoch(args, model, dev_loader, gt_sql_pth, model_sql_path, gt_record_pa
     total_loss = 0
     total_tokens = 0
     pred_list = []
+    if args.mini:
+        gt_sql_pth = os.path.join(f'data/mini_dev.sql')
+        gt_record_path = os.path.join(f'records/mini_dev_gt_records.pkl')
     
     for encoder_input, encoder_mask, decoder_input, decoder_targets, _ in tqdm(dev_loader):
         
