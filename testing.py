@@ -6,7 +6,7 @@ DEVICE = torch.device('cuda') if torch.cuda.is_available() else torch.device('cp
 if __name__ == '__main__':
     args = get_args()
     train_loader, dev_loader, test_loader = load_t5_data(args.batch_size, args.test_batch_size)
-    model = initialize_model(args)
+    model = initialize_model(args).to(DEVICE)
     optimizer, scheduler = initialize_optimizer_and_scheduler(args, model, len(train_loader))
     experiment_name = args.experiment_name
     model_type = 'ft' if args.finetune else 'scr'
