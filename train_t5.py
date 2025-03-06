@@ -150,8 +150,10 @@ def eval_epoch(args, model, dev_loader, gt_sql_pth, model_sql_path, gt_record_pa
     total_tokens = 0
     pred_list = []
     if args.mini:
-        gt_sql_pth = os.path.join(f'data/mini_dev.sql')
-        gt_record_path = os.path.join(f'records/mini_dev_gt_records.pkl')
+        gt_sql_pth = gt_sql_pth.replace('dev', 'mini_dev')
+        gt_record_path = gt_record_path.replace('dev', 'mini_dev')
+        model_sql_path = model_sql_path.replace('dev', 'mini_dev')
+        model_record_path = model_record_path.replace('dev', 'mini_dev')
     
     for encoder_input, encoder_mask, decoder_input, decoder_targets, _ in tqdm(dev_loader):
         
