@@ -20,7 +20,7 @@ def initialize_model(args):
     or training a T5 model initialized with the 'google-t5/t5-small' config
     from scratch.
     '''
-    if args.fine_tune:
+    if args.finetune:
         return T5ForConditionalGeneration.from_pretrained('google-t5/t5-small')
     return T5ForConditionalGeneration(T5Config())
 
