@@ -110,6 +110,8 @@ def train_epoch(args, model, train_loader, optimizer, scheduler):
         encoder_mask = encoder_mask.to(DEVICE)
         decoder_input = decoder_input.to(DEVICE)
         decoder_targets = decoder_targets.to(DEVICE)
+        
+        model = model.to(DEVICE)
 
         logits = model(
             input_ids=encoder_input,
@@ -117,8 +119,6 @@ def train_epoch(args, model, train_loader, optimizer, scheduler):
             decoder_input_ids=decoder_input,
         )['logits']
         
-        model = model.to(DEVICE)
-
         non_pad = decoder_targets != PAD_IDX
         loss = criterion(logits[non_pad], decoder_targets[non_pad])
         loss.backward()
