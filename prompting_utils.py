@@ -1,17 +1,19 @@
-import os
+import os, re
 
 
 def read_schema(schema_path):
     '''
     Read the .schema file
     '''
-    # TODO
+    with open(schema_path, "r") as f:
+        schema = f.read()
+    return schema
 
 def extract_sql_query(response):
     '''
     Extract the SQL query from the model's response
     '''
-    # TODO
+    re.search(r'(SELECT.*FROM.*;)', response).group(1)
 
 def save_logs(output_path, sql_em, record_em, record_f1, error_msgs):
     '''

@@ -11,6 +11,7 @@ from prompting_utils import read_schema, extract_sql_query, save_logs
 from load_data import load_prompting_data
 
 DEVICE = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu') # you can add mps
+MAX_NEW_TOKENS = 512
 
 
 def get_args():
@@ -37,7 +38,7 @@ def get_args():
     return args
 
 
-def create_prompt(sentence, k):
+def create_prompt(sentence, k, sample_sentences = [], sample_queries = []):
     '''
     Function for creating a prompt for zero or few-shot prompting.
 
@@ -47,8 +48,13 @@ def create_prompt(sentence, k):
         * sentence (str): A text string
         * k (int): Number of examples in k-shot prompting
     '''
-    # TODO
-
+    prefix = "Your job is to convert a natural language question into a SQL query. Here is the schema of the database: "
+    schema = read_schema('data/schema.json')
+    example_prefix = "Here are some examples: \n"
+    examples = [f"{s}:{q}\n" for s, q in zip(sample_sentences, sample_queries)[:k]]
+    request = "Please convert the following question into a SQL query: "
+    prompt = prefix+schema+example_prefix+examples.join()+request+sentence
+    return prompt
 
 def exp_kshot(tokenizer, model, inputs, k):
     '''
@@ -86,7 +92,8 @@ def eval_outputs(eval_x, eval_y, gt_sql_pth, model_sql_path, gt_record_path, mod
 
     Add/modify the arguments and code as needed.
     '''
-    # TODO
+    sql_em, record_em, record_f1, model_error_msgs = compute_metrics(gt_sql_pth, model_sql_path, gt_record_path, model_record_path)
+    error_rate = len(model_error_msgs) / len(eval_x)
     return sql_em, record_em, record_f1, model_error_msgs, error_rate
 
 
@@ -147,8 +154,11 @@ def main():
 
     for eval_split in ["dev", "test"]:
         eval_x, eval_y = (dev_x, dev_y) if eval_split == "dev" else (test_x, None)
+        
+        examples = random.sample(list(zip(eval_x, eval_y)), k=shot)
+        sample_sentences, sample_queries = zip(*examples)
 
-        raw_outputs, extracted_queries = exp_kshot(tokenizer, model, eval_x, k)
+        raw_outputs, extracted_queries = exp_kshot(tokenizer, model, eval_x, shot, sample_sentences, sample_queries)
 
         # You can add any post-processing if needed
         # You can compute the records with `compute_records``
