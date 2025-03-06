@@ -206,6 +206,9 @@ def test_inference(args, model, test_loader, model_sql_path, model_record_path):
         
         preds = test_loader.dataset.tokenizer.batch_decode(logits.argmax(-1))
         pred_list.extend(preds)
+    if args.mini:
+        gt_sql_pth = os.path.join(f'data/mini_test.sql')
+        gt_record_path = os.path.join(f'records/mini_test_gt_records.pkl')
             
     save_queries_and_records(preds, model_sql_path, model_record_path)
 
