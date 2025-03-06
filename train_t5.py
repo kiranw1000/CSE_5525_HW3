@@ -195,12 +195,11 @@ def test_inference(args, model, test_loader, model_sql_path, model_record_path):
     model.eval()
     pred_list = []
     
-    for encoder_input, encoder_mask, decoder_input, decoder_targets, _ in tqdm(test_loader):
+    for encoder_input, encoder_mask, decoder_input in tqdm(test_loader):
         
         encoder_input = encoder_input.to(DEVICE)
         encoder_mask = encoder_mask.to(DEVICE)
         decoder_input = decoder_input.to(DEVICE)
-        decoder_targets = decoder_targets.to(DEVICE)
 
         logits = model(
             input_ids=encoder_input,
