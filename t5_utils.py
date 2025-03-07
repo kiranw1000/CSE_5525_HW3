@@ -37,10 +37,10 @@ def save_model(checkpoint_dir, model:T5ForConditionalGeneration, best):
     if best:
         model.save_pretrained(os.path.join(checkpoint_dir, "best"))
 
-def load_model_from_checkpoint(args, best):
+def load_model_from_checkpoint(args, checkpoint_dir, best):
     # Load model from a checkpoint
     if best:
-        return T5ForConditionalGeneration.from_pretrained(os.path.join(args.checkpoint_dir, "best"))
+        return T5ForConditionalGeneration.from_pretrained(os.path.join(checkpoint_dir, "best"))
     return T5ForConditionalGeneration.from_pretrained(args.checkpoint_dir)
 
 def initialize_optimizer_and_scheduler(args, model, epoch_length):

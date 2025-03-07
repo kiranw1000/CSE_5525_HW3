@@ -231,7 +231,8 @@ def main():
     train(args, model, train_loader, dev_loader, optimizer, scheduler)
 
     # Evaluate
-    model = load_model_from_checkpoint(args, best=True)
+    checkpoint_dir = os.path.join('checkpoints', f'{model_type}_experiments', args.experiment_name)
+    model = load_model_from_checkpoint(args, checkpoint_dir, best=True)
     model.eval()
     
     # Dev set
