@@ -231,13 +231,13 @@ def main():
     train(args, model, train_loader, dev_loader, optimizer, scheduler)
 
     # Evaluate
+    model_type = 'ft' if args.finetune else 'scr'
     checkpoint_dir = os.path.join('checkpoints', f'{model_type}_experiments', args.experiment_name)
     model = load_model_from_checkpoint(args, checkpoint_dir, best=True)
     model.eval()
     
     # Dev set
     experiment_name = args.experiment_name
-    model_type = 'ft' if args.finetune else 'scr'
     gt_sql_path = os.path.join(f'data/dev.sql')
     gt_record_path = os.path.join(f'records/dev_gt_records.pkl')
     model_sql_path = os.path.join(f'results/t5_{model_type}_{experiment_name}_dev.sql')
