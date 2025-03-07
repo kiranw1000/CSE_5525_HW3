@@ -49,7 +49,7 @@ def get_args():
     # Data hyperparameters
     parser.add_argument('--batch_size', type=int, default=16)
     parser.add_argument('--test_batch_size', type=int, default=16)
-    parser.add_argument('--mini', type=bool, default=False, help="Whether to use a small subset of the data")
+    parser.add_argument('--mini', action="store_true", help="Whether to use a small subset of the data")
 
     args = parser.parse_args()
     return args
@@ -185,7 +185,7 @@ def eval_epoch(args, model, dev_loader, gt_sql_pth, model_sql_path, gt_record_pa
     save_queries_and_records(pred_list, model_sql_path, model_record_path)
     save_queries_and_records(dev_loader.dataset.sql, gt_sql_pth, gt_record_path)
     sql_em, record_em, record_F1, error_msgs = compute_metrics(gt_sql_pth, model_sql_path, gt_record_path, model_record_path)
-    return dev_loss, record_em, record_F1, sql_em, len(error_msgs) / len(pred_list)
+    return dev_loss, record_em, record_F1, sql_em, sum([1 for error in error_msgs if error!=[]]) / len(pred_list)
         
 def test_inference(args, model, test_loader, model_sql_path, model_record_path):
     '''

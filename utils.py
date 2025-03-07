@@ -79,7 +79,7 @@ def save_queries_and_records(sql_queries: List[str], sql_path: str, record_path:
 
 def read_queries(sql_path: str):
     with open(sql_path, 'r') as f:
-        qs = [q.strip().replace("id0","").replace('<pad>','').replace('</s>','').split("</s>")[0] for q in f.readlines()]
+        qs = [q.strip().split("</s>")[0] for q in f.readlines()]
     return qs
 
 def compute_records(processed_qs: List[str]):
@@ -119,6 +119,7 @@ def compute_records(processed_qs: List[str]):
         else:
             recs.append([])
             error_msgs.append("Query timed out")
+    print(error_msgs)
             
     return recs, error_msgs
 
