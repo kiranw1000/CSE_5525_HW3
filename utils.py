@@ -119,7 +119,6 @@ def compute_records(processed_qs: List[str]):
         else:
             recs.append([])
             error_msgs.append("Query timed out")
-    print(error_msgs)
             
     return recs, error_msgs
 
