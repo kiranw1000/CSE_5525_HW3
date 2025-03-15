@@ -45,7 +45,7 @@ class T5Dataset(Dataset):
             self.nl.append(tokenizer(line, return_tensors='pt'))
             if split != "test" and split != "mini_test":
                 self.queries.append(tokenizer(self.extra_id+queries[i], return_tensors='pt'))
-    
+    å
     def __len__(self):
         return len(self.nl)
 
@@ -75,8 +75,6 @@ def normal_collate_fn(batch):
     encoder_mask = torch.squeeze(pad_sequence([batch[i][0]['attention_mask'].T for i in range(len(batch))], padding_value=PAD_IDX), 2).mT
     decoder_inputs = torch.squeeze(pad_sequence([batch[i][1]['input_ids'][:,:-1].T for i in range(len(batch))], padding_value=PAD_IDX), 2).mT
     decoder_targets = torch.squeeze(pad_sequence([batch[i][1]['input_ids'][:,1:].T for i in range(len(batch))], padding_value=PAD_IDX) ,2).mT
-    print(decoder_inputs.shape, decoder_targets.shape)
-    print(encoder_mask.shape, encoder_ids.shape)
     initial_decoder_inputs = [batch[i][1]['input_ids'][0,0] for i in range(len(batch))]
     return encoder_ids, encoder_mask, decoder_inputs, decoder_targets, initial_decoder_inputs
 
