@@ -32,7 +32,7 @@ class T5Dataset(Dataset):
         self.sql = []
         self.queries = []
         self.tokenizer: T5TokenizerFast = T5TokenizerFast.from_pretrained('google-t5/t5-small')
-        self.extra_id = " "
+        self.extra_id = "<extra_id_0>"
         self.extra_token = self.tokenizer.convert_tokens_to_ids(self.extra_id)
         self.process_data(data_folder, split, self.tokenizer)
 
@@ -73,8 +73,8 @@ def normal_collate_fn(batch):
     temp = [batch[i][0]['input_ids'].T for i in range(len(batch))]
     encoder_ids = torch.squeeze(pad_sequence(temp, padding_value=PAD_IDX),2).mT
     encoder_mask = torch.squeeze(pad_sequence([batch[i][0]['attention_mask'].T for i in range(len(batch))], padding_value=PAD_IDX), 2).mT
-    decoder_inputs = torch.squeeze(pad_sequence([batch[i][1]['input_ids'].T for i in range(len(batch))], padding_value=PAD_IDX), 2).mT
-    decoder_targets = torch.squeeze(pad_sequence([batch[i][1]['input_ids'].T for i in range(len(batch))], padding_value=PAD_IDX) ,2).mT
+    decoder_inputs = torch.squeeze(pad_sequence([batch[i][1]['input_ids'][:-1].T for i in range(len(batch))], padding_value=PAD_IDX), 2).mT
+    decoder_targets = torch.squeeze(pad_sequence([batch[i][1]['input_ids'][1:].T for i in range(len(batch))], padding_value=PAD_IDX) ,2).mT
     initial_decoder_inputs = [batch[i][1]['input_ids'][0,0] for i in range(len(batch))]
     return encoder_ids, encoder_mask, decoder_inputs, decoder_targets, initial_decoder_inputs
 
