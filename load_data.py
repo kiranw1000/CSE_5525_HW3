@@ -45,7 +45,7 @@ class T5Dataset(Dataset):
             self.nl.append(tokenizer(line, return_tensors='pt'))
             if split != "test" and split != "mini_test":
                 self.queries.append(tokenizer(self.extra_id+queries[i], return_tensors='pt'))
-    å
+    
     def __len__(self):
         return len(self.nl)
 
