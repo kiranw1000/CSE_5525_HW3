@@ -1,4 +1,4 @@
-import os, re, utils
+import os, re, utils, json
 
 
 def read_schema(schema_path):
@@ -16,11 +16,15 @@ def extract_sql_query(response):
     result = re.search(r'SELECT(.|\n)*;', response)
     return result.group(0)
 
-def get_schema():
-    return utils.compute_record(
-        "",
-        "SELECT table_name, column_name\nFROM INFORMATION_SCHEMA.COLUMNS\nWHERE table_schema = 'YourDBName'\nORDER BY table_name, ordinal_position"
-        )
+def get_schema(schema_path):
+    '''
+    Read the schema from the schema file
+    '''
+    with open(schema_path, "r") as f:
+        schema = json.load(f)
+        ret = schema['ents'].keys()
+    return ret
+    
 
 def save_logs(output_path, sql_em, record_em, record_f1, error_msgs):
     '''

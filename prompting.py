@@ -7,7 +7,7 @@ from transformers import GemmaTokenizer, AutoModelForCausalLM
 from transformers import BitsAndBytesConfig
 
 from utils import set_random_seeds, compute_metrics, save_queries_and_records, compute_records
-from prompting_utils import read_schema, extract_sql_query, save_logs
+from prompting_utils import read_schema, extract_sql_query, save_logs, get_schema
 from load_data import load_prompting_data
 
 DEVICE = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu') # you can add mps
@@ -49,9 +49,9 @@ def create_prompt(sentence, k, schema_path, sample_sentences = [], sample_querie
         * sentence (str): A text string
         * k (int): Number of examples in k-shot prompting
     '''
-    prefix = "Your job is to convert a natural language question into a SQL query. Here is the schema of the database: "
+    prefix = "Your job is to convert a natural language question into a SQL query. Here are the tables of the database: "
     suffix = "Write the sql query and nothing else."
-    schema = read_schema(schema_path)
+    schema = get_schema(schema_path)
     example_prefix = "Here are some examples: \n" if k>0 else ''
     examples = [f"{s}:{q}\n" for s, q in zip(sample_sentences, sample_queries)][:k]
     request = "Please convert the following question into a SQL query: "
