@@ -52,10 +52,10 @@ def create_prompt(sentence, k, schema_path, sample_sentences = [], sample_querie
     prefix = "Your job is to convert a natural language question into a SQL query. Here is the schema of the database: "
     suffix = "Write the sql query and nothing else."
     schema = read_schema(schema_path)
-    example_prefix = "Here are some examples: \n"
+    example_prefix = "Here are some examples: \n" if k>0 else ''
     examples = [f"{s}:{q}\n" for s, q in zip(sample_sentences, sample_queries)][:k]
     request = "Please convert the following question into a SQL query: "
-    prompt = prefix+schema+example_prefix if k>0 else ''+''.join(examples)+request+'"'+sentence+'" '+suffix
+    prompt = prefix+schema+example_prefix+''.join(examples)+request+'"'+sentence+'" '+suffix
     return prompt
 
 def exp_kshot(tokenizer, model, inputs, k, schema_path, sample_sentences, sample_queries):
