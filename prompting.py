@@ -11,7 +11,7 @@ from prompting_utils import read_schema, extract_sql_query, save_logs
 from load_data import load_prompting_data
 
 DEVICE = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu') # you can add mps
-MAX_NEW_TOKENS = 512
+MAX_NEW_TOKENS = 2048
 hf_token = hf_token.hf_token
 
 
