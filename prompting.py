@@ -50,7 +50,7 @@ def create_prompt(sentence, k, schema_path, sample_sentences = [], sample_querie
         * k (int): Number of examples in k-shot prompting
     '''
     prefix = "Your job is to convert a natural language question into a SQL query. Here is the schema of the database: "
-    suffix = "Do not write anything except for the SQL query."
+    suffix = "Write the sql query and nothing else."
     schema = read_schema(schema_path)
     example_prefix = "Here are some examples: \n"
     examples = [f"{s}:{q}\n" for s, q in zip(sample_sentences, sample_queries)][:k]
