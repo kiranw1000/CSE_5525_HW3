@@ -79,7 +79,7 @@ def exp_kshot(tokenizer, model, inputs, k, schema_path, sample_sentences, sample
 
         input_ids = tokenizer(prompt, return_tensors="pt").to(DEVICE)
         outputs = model.generate(**input_ids, max_new_tokens=MAX_NEW_TOKENS) # You should set MAX_NEW_TOKENS
-        print(outputs)
+        print(outputs.shape)
         response = tokenizer.decode(outputs[0]) # How does the response look like? You may need to parse it
         raw_outputs.append(response)
 
