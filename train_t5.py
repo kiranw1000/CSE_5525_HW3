@@ -170,7 +170,7 @@ def eval_epoch(args, model, dev_loader, gt_sql_pth, model_sql_path, gt_record_pa
             decoder_input_ids=decoder_input,
         )['logits']
         
-        preds = dev_loader.dataset.tokenizer.batch_decode(logits.argmax(-1))
+        preds = dev_loader.dataset.tokenizer.batch_decode(logits.argmax(-1), skip_special_tokens=True)
         pred_list.extend(preds)
 
         non_pad = decoder_targets != PAD_IDX
