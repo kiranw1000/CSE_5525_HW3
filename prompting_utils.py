@@ -14,6 +14,7 @@ def extract_sql_query(response):
     Extract the SQL query from the model's response
     '''
     result = re.search(r'SELECT(.|\n)*;', response)
+    print("Result: ")
     print(result)
     return result.group(0)
 
