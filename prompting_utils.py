@@ -23,7 +23,7 @@ def get_schema(schema_path):
     with open(schema_path, "r") as f:
         schema = json.load(f)
         ret = schema['ents'].keys()
-    return ret
+    return str(ret)
     
 
 def save_logs(output_path, sql_em, record_em, record_f1, error_msgs):
