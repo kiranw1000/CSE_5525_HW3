@@ -39,7 +39,7 @@ def get_args():
     return args
 
 
-def create_prompt(sentence, k, sample_sentences = [], sample_queries = []):
+def create_prompt(sentence, k, schema_path, sample_sentences = [], sample_queries = []):
     '''
     Function for creating a prompt for zero or few-shot prompting.
 
@@ -50,14 +50,14 @@ def create_prompt(sentence, k, sample_sentences = [], sample_queries = []):
         * k (int): Number of examples in k-shot prompting
     '''
     prefix = "Your job is to convert a natural language question into a SQL query. Here is the schema of the database: "
-    schema = read_schema('data/schema.json')
+    schema = read_schema(schema_path)
     example_prefix = "Here are some examples: \n"
     examples = [f"{s}:{q}\n" for s, q in zip(sample_sentences, sample_queries)[:k]]
     request = "Please convert the following question into a SQL query: "
     prompt = prefix+schema+example_prefix+examples.join()+request+sentence
     return prompt
 
-def exp_kshot(tokenizer, model, inputs, k, sample_sentences, sample_queries):
+def exp_kshot(tokenizer, model, inputs, k, schema_path, sample_sentences, sample_queries):
     '''
     k-shot prompting experiments using the provided model and tokenizer. 
     This function generates SQL queries from text prompts and evaluates their accuracy.
@@ -74,7 +74,7 @@ def exp_kshot(tokenizer, model, inputs, k, sample_sentences, sample_queries):
     extracted_queries = []
 
     for i, sentence in tqdm(enumerate(inputs)):
-        prompt = create_prompt(sentence, k, sample_sentences, sample_queries) # Looking at the prompt may also help
+        prompt = create_prompt(sentence, k, schema_path, sample_sentences, sample_queries) # Looking at the prompt may also help
 
         input_ids = tokenizer(prompt, return_tensors="pt").to(DEVICE)
         outputs = model.generate(**input_ids, max_new_tokens=MAX_NEW_TOKENS) # You should set MAX_NEW_TOKENS
@@ -147,6 +147,7 @@ def main():
     model_name = args.model
     to_quantize = args.quantization
     experiment_name = args.experiment_name
+    schema_path = "data/flight_database.schema"
 
     set_random_seeds(args.seed)
 
@@ -162,7 +163,7 @@ def main():
         examples = random.sample(list(zip(train_x, train_y)), k=shot)
         sample_sentences, sample_queries = zip(*examples) if shot > 0 else ([], [])
 
-        raw_outputs, extracted_queries = exp_kshot(tokenizer, model, eval_x, shot, sample_sentences, sample_queries)
+        raw_outputs, extracted_queries = exp_kshot(tokenizer, model, eval_x, shot, schema_path, sample_sentences, sample_queries)
 
         # You can add any post-processing if needed
         # You can compute the records with `compute_records``
