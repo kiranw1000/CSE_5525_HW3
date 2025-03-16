@@ -83,6 +83,7 @@ def exp_kshot(tokenizer, model, inputs, k, schema_path, sample_sentences, sample
         outputs = model.generate(**input_ids, max_new_tokens=MAX_NEW_TOKENS) # You should set MAX_NEW_TOKENS
         response = tokenizer.decode(outputs[0]) # How does the response look like? You may need to parse it
         raw_outputs.append(response)
+        print(response[len(prompt):]) # You may want to print the response to see if it is correct
 
         # Extract the SQL query
         extracted_query = extract_sql_query(response)
