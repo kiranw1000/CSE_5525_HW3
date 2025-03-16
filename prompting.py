@@ -55,7 +55,7 @@ def create_prompt(sentence, k, schema_path, sample_sentences = [], sample_querie
     example_prefix = "Here are some examples: \n"
     examples = [f"{s}:{q}\n" for s, q in zip(sample_sentences, sample_queries)][:k]
     request = "Please convert the following question into a SQL query: "
-    prompt = prefix+schema+example_prefix if k>0 else ''+''.join(examples)+request+sentence+suffix
+    prompt = prefix+schema+example_prefix if k>0 else ''+''.join(examples)+request+'"'+sentence+'" '+suffix
     return prompt
 
 def exp_kshot(tokenizer, model, inputs, k, schema_path, sample_sentences, sample_queries):
