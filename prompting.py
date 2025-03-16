@@ -55,7 +55,7 @@ def create_prompt(sentence, k, schema_path, sample_sentences = [], sample_querie
     example_prefix = "Here are some examples: \n" if k>0 else ''
     examples = [f"{s}:{q}\n" for s, q in zip(sample_sentences, sample_queries)][:k]
     request = "Please convert the following question into a SQL query: "
-    prompt = prefix+schema+example_prefix+''.join(examples)+request+'"'+sentence+'" '+suffix
+    prompt = prefix+schema+example_prefix+''.join(examples)+request+'"'+sentence+'". '+suffix
     return prompt
 
 def exp_kshot(tokenizer, model, inputs, k, schema_path, sample_sentences, sample_queries):
@@ -82,7 +82,6 @@ def exp_kshot(tokenizer, model, inputs, k, schema_path, sample_sentences, sample
         input_ids = tokenizer(prompt, return_tensors="pt").to(DEVICE)
         outputs = model.generate(**input_ids, max_new_tokens=MAX_NEW_TOKENS) # You should set MAX_NEW_TOKENS
         response = tokenizer.decode(outputs[0]) # How does the response look like? You may need to parse it
-        print(outputs)
         raw_outputs.append(response)
         print("Response: ")
         print(response) # You may want to print the response to see if it is correct
