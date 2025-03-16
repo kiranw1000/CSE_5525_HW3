@@ -13,7 +13,7 @@ def extract_sql_query(response):
     '''
     Extract the SQL query from the model's response
     '''
-    result = re.search(r'(SELECT.*FROM.*;)', response)
+    result = re.search(r'SELECT(.|\n)*;', response)
     print(result)
 
 def save_logs(output_path, sql_em, record_em, record_f1, error_msgs):
