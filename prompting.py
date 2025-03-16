@@ -77,6 +77,7 @@ def exp_kshot(tokenizer, model, inputs, k, schema_path, sample_sentences, sample
     for i, sentence in tqdm(enumerate(inputs)):
         print(sentence)
         prompt = create_prompt(sentence, k, schema_path, sample_sentences, sample_queries) # Looking at the prompt may also help
+        print(prompt)
 
         input_ids = tokenizer(prompt, return_tensors="pt").to(DEVICE)
         outputs = model.generate(**input_ids, max_new_tokens=MAX_NEW_TOKENS) # You should set MAX_NEW_TOKENS
