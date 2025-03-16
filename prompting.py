@@ -1,7 +1,7 @@
 import os, argparse, random
 from tqdm import tqdm
 
-import torch
+import torch, hf_token
 from transformers import GemmaTokenizerFast, GemmaForCausalLM
 from transformers import GemmaTokenizer, AutoModelForCausalLM
 from transformers import BitsAndBytesConfig
@@ -12,6 +12,7 @@ from load_data import load_prompting_data
 
 DEVICE = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu') # you can add mps
 MAX_NEW_TOKENS = 512
+hf_token = hf_token.hf_token
 
 
 def get_args():
@@ -108,25 +109,28 @@ def initialize_model_and_tokenizer(model_name, to_quantize=False):
     '''
     if model_name == "gemma":
         model_id = "google/gemma-1.1-2b-it"
-        tokenizer = GemmaTokenizerFast.from_pretrained(model_id)
+        tokenizer = GemmaTokenizerFast.from_pretrained(model_id, token=hf_token)
         # Native weights exported in bfloat16 precision, but you can use a different precision if needed
         model = GemmaForCausalLM.from_pretrained(
             model_id,
             torch_dtype=torch.bfloat16, 
+            token=hf_token
         ).to(DEVICE)
     elif model_name == "codegemma":
         model_id = "google/codegemma-7b-it"
-        tokenizer = GemmaTokenizer.from_pretrained(model_id)
+        tokenizer = GemmaTokenizer.from_pretrained(model_id, token=hf_token)
         if to_quantize:
             nf4_config = BitsAndBytesConfig(
                 load_in_4bit=True,
                 bnb_4bit_quant_type="nf4", # 4-bit quantization
             )
             model = AutoModelForCausalLM.from_pretrained(model_id,
+                                                        token = hf_token,
                                                         torch_dtype=torch.bfloat16,
                                                         config=nf4_config).to(DEVICE)
         else:
             model = AutoModelForCausalLM.from_pretrained(model_id,
+                                                        token = hf_token,
                                                         torch_dtype=torch.bfloat16).to(DEVICE)
     return tokenizer, model
 
