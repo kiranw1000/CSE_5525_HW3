@@ -57,7 +57,7 @@ def create_prompt(sentence, k, sample_sentences = [], sample_queries = []):
     prompt = prefix+schema+example_prefix+examples.join()+request+sentence
     return prompt
 
-def exp_kshot(tokenizer, model, inputs, k):
+def exp_kshot(tokenizer, model, inputs, k, sample_sentences, sample_queries):
     '''
     k-shot prompting experiments using the provided model and tokenizer. 
     This function generates SQL queries from text prompts and evaluates their accuracy.
@@ -74,7 +74,7 @@ def exp_kshot(tokenizer, model, inputs, k):
     extracted_queries = []
 
     for i, sentence in tqdm(enumerate(inputs)):
-        prompt = create_prompt(sentence, k) # Looking at the prompt may also help
+        prompt = create_prompt(sentence, k, sample_sentences, sample_queries) # Looking at the prompt may also help
 
         input_ids = tokenizer(prompt, return_tensors="pt").to(DEVICE)
         outputs = model.generate(**input_ids, max_new_tokens=MAX_NEW_TOKENS) # You should set MAX_NEW_TOKENS
@@ -159,8 +159,8 @@ def main():
     for eval_split in ["dev", "test"]:
         eval_x, eval_y = (dev_x, dev_y) if eval_split == "dev" else (test_x, None)
         
-        examples = random.sample(list(zip(eval_x, eval_y)), k=shot)
-        sample_sentences, sample_queries = zip(*examples)
+        examples = random.sample(list(zip(train_x, train_y)), k=shot)
+        sample_sentences, sample_queries = zip(*examples) if shot > 0 else ([], [])
 
         raw_outputs, extracted_queries = exp_kshot(tokenizer, model, eval_x, shot, sample_sentences, sample_queries)
 
