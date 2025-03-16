@@ -15,6 +15,7 @@ def extract_sql_query(response):
     '''
     result = re.search(r'SELECT(.|\n)*;', response)
     print(result)
+    return result.group(0)
 
 def save_logs(output_path, sql_em, record_em, record_f1, error_msgs):
     '''
