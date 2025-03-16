@@ -1,4 +1,4 @@
-import os, re
+import os, re, utils
 
 
 def read_schema(schema_path):
@@ -14,9 +14,13 @@ def extract_sql_query(response):
     Extract the SQL query from the model's response
     '''
     result = re.search(r'SELECT(.|\n)*;', response)
-    print("Result: ")
-    print(result)
     return result.group(0)
+
+def get_schema():
+    return utils.compute_record(
+        "",
+        "SELECT table_name, column_name\nFROM INFORMATION_SCHEMA.COLUMNS\nWHERE table_schema = 'YourDBName'\nORDER BY table_name, ordinal_position"
+        )
 
 def save_logs(output_path, sql_em, record_em, record_f1, error_msgs):
     '''
