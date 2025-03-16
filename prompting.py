@@ -52,7 +52,7 @@ def create_prompt(sentence, k, schema_path, sample_sentences = [], sample_querie
     prefix = "Your job is to convert a natural language question into a SQL query. Here is the schema of the database: "
     schema = read_schema(schema_path)
     example_prefix = "Here are some examples: \n"
-    examples = [f"{s}:{q}\n" for s, q in zip(sample_sentences, sample_queries)[:k]]
+    examples = [f"{s}:{q}\n" for s, q in zip(sample_sentences, sample_queries)][:k]
     request = "Please convert the following question into a SQL query: "
     prompt = prefix+schema+example_prefix+examples.join()+request+sentence
     return prompt
