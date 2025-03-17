@@ -205,13 +205,15 @@ def test_inference(args, model, test_loader, model_sql_path, model_record_path):
         encoder_mask = encoder_mask.to(DEVICE)
         decoder_input = decoder_input.to(DEVICE)
         
-        model = model.to(DEVICE)
-
-        logits = model(
+        generated_ids = model.generate(
             input_ids=encoder_input,
             attention_mask=encoder_mask,
-        )['logits']
+            max_length=512,  # You can adjust the max_length as needed
+            num_beams=5,    # Using beam search with 5 beams
+            early_stopping=True
+        )
         
+        preds = test_loader.dataset.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)
         print(logits.shape)
         preds = test_loader.dataset.tokenizer.batch_decode(logits.argmax(-1), skip_special_tokens=True)
         print(preds)
