@@ -210,8 +210,8 @@ def test_inference(args, model, test_loader, model_sql_path, model_record_path):
             attention_mask=encoder_mask,
             decoder_input_ids= decoder_input,
             # max_length=512,  # You can adjust the max_length as needed
-            num_beams=5,    # Using beam search with 5 beams
-            early_stopping=True
+            # num_beams=5,    # Using beam search with 5 beams
+            # early_stopping=True
         )
         
         preds = test_loader.dataset.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)
