@@ -168,6 +168,7 @@ def eval_epoch(args, model, dev_loader, gt_sql_pth, model_sql_path, gt_record_pa
 
         logits = model(
             input_ids=encoder_input,
+            attention_mask=encoder_mask,
             decoder_input_ids=decoder_input,
         )['logits']
         
@@ -196,7 +197,7 @@ def test_inference(args, model, test_loader, model_sql_path, model_record_path):
     model.eval()
     pred_list = []
     
-    for encoder_input, encoder_mask, decoder_input in tqdm(test_loader):
+    for encoder_input, encoder_mask, decoder_input, _, _ in tqdm(test_loader):
         
         encoder_input = encoder_input.to(DEVICE)
         encoder_mask = encoder_mask.to(DEVICE)
