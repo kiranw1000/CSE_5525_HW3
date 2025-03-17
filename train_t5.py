@@ -168,7 +168,6 @@ def eval_epoch(args, model, dev_loader, gt_sql_pth, model_sql_path, gt_record_pa
 
         logits = model(
             input_ids=encoder_input,
-            attention_mask=encoder_mask,
             decoder_input_ids=decoder_input,
         )['logits']
         
