@@ -202,6 +202,8 @@ def test_inference(args, model, test_loader, model_sql_path, model_record_path):
         encoder_input = encoder_input.to(DEVICE)
         encoder_mask = encoder_mask.to(DEVICE)
         decoder_input = decoder_input.to(DEVICE)
+        
+        model = model.to(DEVICE)
 
         logits = model(
             input_ids=encoder_input,
