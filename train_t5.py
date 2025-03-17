@@ -211,11 +211,11 @@ def test_inference(args, model, test_loader, model_sql_path, model_record_path):
         
         preds = test_loader.dataset.tokenizer.batch_decode(logits.argmax(-1))
         pred_list.extend(preds)
+            
+        print(pred_list)
     if args.mini:
         model_sql_path = model_sql_path.replace('test', 'mini_test')
         model_record_path = model_record_path.replace('test', 'mini_test')
-            
-    print(pred_list)
     save_queries_and_records(pred_list, model_sql_path, model_record_path)
 
 def main():
