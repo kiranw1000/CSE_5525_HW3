@@ -75,7 +75,7 @@ def normal_collate_fn(batch):
     encoder_mask = torch.squeeze(pad_sequence([batch[i][0]['attention_mask'].T for i in range(len(batch))], padding_value=PAD_IDX), 2).mT
     decoder_inputs = torch.squeeze(pad_sequence([batch[i][1]['input_ids'][:,:-1].T for i in range(len(batch))], padding_value=PAD_IDX), 2).mT
     decoder_targets = torch.squeeze(pad_sequence([batch[i][1]['input_ids'][:,1:].T for i in range(len(batch))], padding_value=PAD_IDX) ,2).mT
-    initial_decoder_inputs = [batch[i][1]['input_ids'][0,0] for i in range(len(batch))]
+    initial_decoder_inputs = [PAD_IDX for i in range(len(batch))]
     return encoder_ids, encoder_mask, decoder_inputs, decoder_targets, initial_decoder_inputs
 
 def test_collate_fn(batch):
@@ -94,7 +94,7 @@ def test_collate_fn(batch):
     temp = [batch[i][0]['input_ids'].T for i in range(len(batch))]
     encoder_ids = torch.squeeze(pad_sequence(temp, padding_value=PAD_IDX), 2).mT
     encoder_mask = torch.squeeze(pad_sequence([batch[i][0]['attention_mask'].T for i in range(len(batch))], padding_value=PAD_IDX), 2).mT
-    initial_decoder_inputs = torch.tensor([[batch[i][1] for i in range(len(batch))]]).mT
+    initial_decoder_inputs = torch.tensor([[PAD_IDX for i in range(len(batch))]]).mT
     return encoder_ids, encoder_mask, initial_decoder_inputs
 
 def get_dataloader(batch_size, split):
