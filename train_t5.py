@@ -206,11 +206,13 @@ def test_inference(args, model, test_loader, model_sql_path, model_record_path):
         decoder_input = decoder_input.to(DEVICE)
         
         model = model.to(DEVICE)
+        
+        print([decoder_input]*512)
 
         logits = model(
             input_ids=encoder_input,
             attention_mask=encoder_mask,
-            decoder_input_ids=decoder_input,
+            decoder_input_ids=[decoder_input]*512,
         )['logits']
         
         print(logits.shape)
