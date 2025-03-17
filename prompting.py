@@ -187,6 +187,7 @@ def main():
 
         # Save results
         # You can for instance use the `save_queries_and_records` function
+        save_queries_and_records(eval_x, extracted_queries, model_sql_path, model_record_path)
 
         # Save logs, if needed
         log_path = "" # to specify
