@@ -189,7 +189,7 @@ def eval_epoch(args, model, dev_loader, gt_sql_pth, model_sql_path, gt_record_pa
     sql_em, record_em, record_F1, error_msgs = compute_metrics(gt_sql_pth, model_sql_path, gt_record_path, model_record_path)
     return dev_loss, record_em, record_F1, sql_em, sum([1 for error in error_msgs if 'error' in error.lower()]) / len(pred_list)
         
-def test_inference(args, model, test_loader, model_sql_path, model_record_path, dev_loader):
+def test_inference(args, model, test_loader, model_sql_path, model_record_path):
     '''
     You must implement inference to compute your model's generated SQL queries and its associated 
     database records. Implementation should be very similar to eval_epoch.
@@ -213,7 +213,7 @@ def test_inference(args, model, test_loader, model_sql_path, model_record_path, 
             decoder_input_ids=decoder_input,
         )['logits']
         
-        preds = dev_loader.dataset.tokenizer.batch_decode(logits.argmax(-1), skip_special_tokens=True)
+        preds = test_loader.dataset.tokenizer.batch_decode(logits.argmax(-1), skip_special_tokens=True)
         print(preds)
         pred_list.extend(preds)
     if args.mini:
@@ -258,7 +258,7 @@ def main():
     # Test set
     model_sql_path = os.path.join(f'results/t5_{model_type}_{experiment_name}_test.sql')
     model_record_path = os.path.join(f'records/t5_{model_type}_{experiment_name}_test.pkl')
-    test_inference(args, model, test_loader, model_sql_path, model_record_path, dev_loader)
+    test_inference(args, model, test_loader, model_sql_path, model_record_path)
 
 if __name__ == "__main__":
     main()

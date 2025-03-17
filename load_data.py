@@ -51,7 +51,7 @@ class T5Dataset(Dataset):
 
     def __getitem__(self, idx):
         if self.split == "test" or self.split == "mini_test":
-            return self.nl[idx], torch.tensor([[self.extra_token]])
+            return self.nl[idx]
         return self.nl[idx], self.queries[idx]
 
 def normal_collate_fn(batch):
@@ -91,9 +91,9 @@ def test_collate_fn(batch):
         * encoder_mask: Mask of shape BxT associated with padding tokens in the encoder input
         * initial_decoder_inputs: The very first input token to be decoder (only to be used in evaluation)
     '''
-    temp = [batch[i][0]['input_ids'].T for i in range(len(batch))]
+    temp = [batch[i]['input_ids'].T for i in range(len(batch))]
     encoder_ids = torch.squeeze(pad_sequence(temp, padding_value=PAD_IDX), 2).mT
-    encoder_mask = torch.squeeze(pad_sequence([batch[i][0]['attention_mask'].T for i in range(len(batch))], padding_value=PAD_IDX), 2).mT
+    encoder_mask = torch.squeeze(pad_sequence([batch[i]['attention_mask'].T for i in range(len(batch))], padding_value=PAD_IDX), 2).mT
     initial_decoder_inputs = torch.tensor([[PAD_IDX for i in range(len(batch))]]).mT
     return encoder_ids, encoder_mask, initial_decoder_inputs
 
