@@ -210,6 +210,7 @@ def test_inference(args, model, test_loader, model_sql_path, model_record_path):
             attention_mask=encoder_mask,
             decoder_input_ids=decoder_input,
         )['logits']
+        print(logits)
         
         preds = test_loader.dataset.tokenizer.batch_decode(logits.argmax(-1))
         pred_list.extend(preds)
