@@ -210,7 +210,6 @@ def test_inference(args, model, test_loader, model_sql_path, model_record_path):
         logits = model(
             input_ids=encoder_input,
             attention_mask=encoder_mask,
-            decoder_input_ids=decoder_input,
         )['logits']
         
         print(logits.shape)
