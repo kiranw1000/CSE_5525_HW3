@@ -51,7 +51,7 @@ def get_args():
     parser.add_argument('--test_batch_size', type=int, default=16)
     parser.add_argument('--mini', action="store_true", help="Whether to use a small subset of the data")
     parser.add_argument('--load_model', action='store_true', help="Whether to load a model from a checkpoint")
-    parser.add_argument('--eval_only', action='store_true', help="Whether to only evaluate the model")
+    parser.add_argument('--test_only', action='store_true', help="Whether to only run the model on test data")
 
     args = parser.parse_args()
     return args
@@ -215,8 +215,8 @@ def test_inference(args, model, test_loader, model_sql_path, model_record_path):
         model_sql_path = model_sql_path.replace('test', 'mini_test')
         model_record_path = model_record_path.replace('test', 'mini_test')
             
-    print(preds)
-    save_queries_and_records(preds, model_sql_path, model_record_path)
+    print(pred_list)
+    save_queries_and_records(pred_list, model_sql_path, model_record_path)
 
 def main():
     # Get key arguments
@@ -233,24 +233,24 @@ def main():
     optimizer, scheduler = initialize_optimizer_and_scheduler(args, model, len(train_loader))
 
     # Train
-    if not args.eval_only:
+    if not args.test_only:
         train(args, model, train_loader, dev_loader, optimizer, scheduler)
 
-    # Evaluate
-    model = load_model_from_checkpoint(args, checkpoint_dir, best=True)
-    model.eval()
-    
-    # Dev set
-    experiment_name = args.experiment_name
-    gt_sql_path = os.path.join(f'data/dev.sql')
-    gt_record_path = os.path.join(f'records/dev_gt_records.pkl')
-    model_sql_path = os.path.join(f'results/t5_{model_type}_{experiment_name}_dev.sql')
-    model_record_path = os.path.join(f'records/t5_{model_type}_{experiment_name}_dev.pkl')
-    dev_loss, dev_record_em, dev_record_f1, dev_sql_em, dev_error_rate = eval_epoch(args, model, dev_loader,
-                                                                                    gt_sql_path, model_sql_path,
-                                                                                    gt_record_path, model_record_path)
-    print(f"Dev set results: Loss: {dev_loss}, Record F1: {dev_record_f1}, Record EM: {dev_record_em}, SQL EM: {dev_sql_em}")
-    print(f"Dev set results: {dev_error_rate*100:.2f}% of the generated outputs led to SQL errors")
+        # Evaluate
+        model = load_model_from_checkpoint(args, checkpoint_dir, best=True)
+        model.eval()
+        
+        # Dev set
+        experiment_name = args.experiment_name
+        gt_sql_path = os.path.join(f'data/dev.sql')
+        gt_record_path = os.path.join(f'records/dev_gt_records.pkl')
+        model_sql_path = os.path.join(f'results/t5_{model_type}_{experiment_name}_dev.sql')
+        model_record_path = os.path.join(f'records/t5_{model_type}_{experiment_name}_dev.pkl')
+        dev_loss, dev_record_em, dev_record_f1, dev_sql_em, dev_error_rate = eval_epoch(args, model, dev_loader,
+                                                                                        gt_sql_path, model_sql_path,
+                                                                                        gt_record_path, model_record_path)
+        print(f"Dev set results: Loss: {dev_loss}, Record F1: {dev_record_f1}, Record EM: {dev_record_em}, SQL EM: {dev_sql_em}")
+        print(f"Dev set results: {dev_error_rate*100:.2f}% of the generated outputs led to SQL errors")
 
     # Test set
     model_sql_path = os.path.join(f'results/t5_{model_type}_{experiment_name}_test.sql')
