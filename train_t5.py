@@ -215,6 +215,7 @@ def test_inference(args, model, test_loader, model_sql_path, model_record_path):
         model_sql_path = model_sql_path.replace('test', 'mini_test')
         model_record_path = model_record_path.replace('test', 'mini_test')
             
+    print(preds)
     save_queries_and_records(preds, model_sql_path, model_record_path)
 
 def main():
