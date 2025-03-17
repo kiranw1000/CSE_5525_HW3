@@ -197,7 +197,7 @@ def test_inference(args, model, test_loader, model_sql_path, model_record_path):
     model.eval()
     pred_list = []
     
-    for encoder_input, encoder_mask, decoder_input in tqdm(test_loader):
+    for encoder_input, encoder_mask, decoder_initial_input in tqdm(test_loader):
         
         print(test_loader.dataset.tokenizer.batch_decode(encoder_input, skip_special_tokens=True))
         
@@ -205,16 +205,9 @@ def test_inference(args, model, test_loader, model_sql_path, model_record_path):
         encoder_mask = encoder_mask.to(DEVICE)
         decoder_input = decoder_input.to(DEVICE)
         
-        generated_ids = model.generate(
-            input_ids=encoder_input,
-            attention_mask=encoder_mask,
-            decoder_input_ids= decoder_input,
-            # max_length=512,  # You can adjust the max_length as needed
-            # num_beams=5,    # Using beam search with 5 beams
-            # early_stopping=True
-        )
+        model = model.to(DEVICE)
+        logits = model.generate(input_ids=encoder_input, attention_mask=encoder_mask,decoder_start_token_id=decoder_initial_input,max_new_tokens=500, num_beams=3, early_stopping=True)
         
-        preds = test_loader.dataset.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)
         print(logits.shape)
         preds = test_loader.dataset.tokenizer.batch_decode(logits.argmax(-1), skip_special_tokens=True)
         print(preds)
