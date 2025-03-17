@@ -223,6 +223,7 @@ def main():
     if args.use_wandb:
         # Recommended: Using wandb (or tensorboard) for result logging can make experimentation easier
         setup_wandb(args)
+    model_type = 'ft' if args.finetune else 'scr'
     checkpoint_dir = os.path.join('checkpoints', f'{model_type}_experiments', args.experiment_name)
 
     # Load the data and the model
@@ -235,7 +236,6 @@ def main():
         train(args, model, train_loader, dev_loader, optimizer, scheduler)
 
     # Evaluate
-    model_type = 'ft' if args.finetune else 'scr'
     model = load_model_from_checkpoint(args, checkpoint_dir, best=True)
     model.eval()
     
