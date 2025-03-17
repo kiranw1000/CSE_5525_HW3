@@ -50,6 +50,8 @@ def get_args():
     parser.add_argument('--batch_size', type=int, default=16)
     parser.add_argument('--test_batch_size', type=int, default=16)
     parser.add_argument('--mini', action="store_true", help="Whether to use a small subset of the data")
+    parser.add_argument('--load_model', action='store_true', help="Whether to load a model from a checkpoint")
+    parser.add_argument('--eval_only', action='store_true', help="Whether to only evaluate the model")
 
     args = parser.parse_args()
     return args
@@ -221,18 +223,19 @@ def main():
     if args.use_wandb:
         # Recommended: Using wandb (or tensorboard) for result logging can make experimentation easier
         setup_wandb(args)
+    checkpoint_dir = os.path.join('checkpoints', f'{model_type}_experiments', args.experiment_name)
 
     # Load the data and the model
     train_loader, dev_loader, test_loader = load_t5_data(args.batch_size, args.test_batch_size, mini=args.mini)
-    model = initialize_model(args)
+    model = initialize_model(args) if not args.load_model else load_model_from_checkpoint(args)
     optimizer, scheduler = initialize_optimizer_and_scheduler(args, model, len(train_loader))
 
-    # Train 
-    train(args, model, train_loader, dev_loader, optimizer, scheduler)
+    # Train
+    if not args.eval_only:
+        train(args, model, train_loader, dev_loader, optimizer, scheduler)
 
     # Evaluate
     model_type = 'ft' if args.finetune else 'scr'
-    checkpoint_dir = os.path.join('checkpoints', f'{model_type}_experiments', args.experiment_name)
     model = load_model_from_checkpoint(args, checkpoint_dir, best=True)
     model.eval()
     
