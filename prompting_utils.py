@@ -14,6 +14,8 @@ def extract_sql_query(response):
     Extract the SQL query from the model's response
     '''
     result = re.search(r'SELECT(.|\n)*;', response)
+    if result is None:
+        return 'ERROR: SQL query not found'
     return result.group(0)
 
 def get_schema(schema_path):
