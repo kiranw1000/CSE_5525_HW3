@@ -209,7 +209,7 @@ def test_inference(args, model, test_loader, model_sql_path, model_record_path):
         logits = model.generate(input_ids=encoder_input, attention_mask=encoder_mask,decoder_start_token_id=decoder_initial_input,max_new_tokens=500, num_beams=3, early_stopping=True)
         
         print(logits)
-        preds = test_loader.dataset.tokenizer.batch_decode(logits.argmax(-1), batch_first=True, skip_special_tokens=True)
+        preds = test_loader.dataset.tokenizer.batch_decode(logits, batch_first=True, skip_special_tokens=True)
         print(preds)
         pred_list.extend(preds)
     if args.mini:
