@@ -228,7 +228,7 @@ def main():
 
     # Load the data and the model
     train_loader, dev_loader, test_loader = load_t5_data(args.batch_size, args.test_batch_size, mini=args.mini)
-    model = initialize_model(args) if not args.load_model else load_model_from_checkpoint(args)
+    model = initialize_model(args) if not args.load_model else load_model_from_checkpoint(args, checkpoint_dir=checkpoint_dir, best=True)
     optimizer, scheduler = initialize_optimizer_and_scheduler(args, model, len(train_loader))
 
     # Train
