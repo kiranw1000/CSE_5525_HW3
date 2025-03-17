@@ -49,14 +49,13 @@ def create_prompt(sentence, k, schema_path, sample_sentences = [], sample_querie
         * sentence (str): A text string
         * k (int): Number of examples in k-shot prompting
     '''
-    # prefix = "Your job is to convert a natural language question into a SQL query. Here are the tables of the database: "
-    prefix = ""
-    suffix = "Write the sql query and nothing else: "
+    prefix = "Your job is to convert a natural language question into a SQL query. Here are the tables of the database: "
+    suffix = " write the sql query that answers the question."
     schema = get_schema(schema_path)+' '
     example_prefix = "Here are some examples: \n" if k>0 else ''
     examples = [f"{s}:{q}\n" for s, q in zip(sample_sentences, sample_queries)][:k]
-    request = "Please convert the following question into a SQL query: "
-    prompt = prefix+schema+example_prefix+''.join(examples)+request+'"'+sentence+'". '+suffix
+    request = "Given the sentence "
+    prompt = prefix+schema+example_prefix+'\n'.join(examples)+request+'"'+sentence+'". '+suffix
     return prompt
 
 def exp_kshot(tokenizer, model: GemmaForCausalLM, inputs, k, schema_path, sample_sentences, sample_queries):
