@@ -197,7 +197,7 @@ def test_inference(args, model, test_loader, model_sql_path, model_record_path):
     model.eval()
     pred_list = []
     
-    for encoder_input, encoder_mask, decoder_input in tqdm(test_loader):
+    for encoder_input, encoder_mask, decoder_input, _, _ in tqdm(test_loader):
         
         print(test_loader.dataset.tokenizer.batch_decode(encoder_input, skip_special_tokens=True))
         

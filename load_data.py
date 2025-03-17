@@ -101,7 +101,8 @@ def get_dataloader(batch_size, split):
     data_folder = 'data'
     dset = T5Dataset(data_folder, split)
     shuffle = split == "train" or split == "mini_train"
-    collate_fn = normal_collate_fn if split != "test" and split!="mini_test" else test_collate_fn
+    # collate_fn = normal_collate_fn if split != "test" and split!="mini_test" else test_collate_fn
+    collate_fn = normal_collate_fn
 
     dataloader = DataLoader(dset, batch_size=batch_size, shuffle=shuffle, collate_fn=collate_fn)
     return dataloader
