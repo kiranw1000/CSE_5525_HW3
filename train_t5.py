@@ -197,7 +197,7 @@ def test_inference(args, model, test_loader, model_sql_path, model_record_path):
     model.eval()
     pred_list = []
     
-    for encoder_input, encoder_mask, decoder_input, _, _  in tqdm(test_loader):
+    for encoder_input, encoder_mask, decoder_input in tqdm(test_loader):
         
         print(test_loader.dataset.tokenizer.batch_decode(encoder_input, skip_special_tokens=True))
         
@@ -259,7 +259,7 @@ def main():
     # Test set
     model_sql_path = os.path.join(f'results/t5_{model_type}_{experiment_name}_test.sql')
     model_record_path = os.path.join(f'records/t5_{model_type}_{experiment_name}_test.pkl')
-    test_inference(args, model, dev_loader, model_sql_path, model_record_path)
+    test_inference(args, model, test_loader, model_sql_path, model_record_path)
 
 if __name__ == "__main__":
     main()
