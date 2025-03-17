@@ -58,7 +58,7 @@ def create_prompt(sentence, k, schema_path, sample_sentences = [], sample_querie
     prompt = prefix+schema+example_prefix+''.join(examples)+request+'"'+sentence+'". '+suffix
     return prompt
 
-def exp_kshot(tokenizer, model, inputs, k, schema_path, sample_sentences, sample_queries):
+def exp_kshot(tokenizer, model: GemmaForCausalLM, inputs, k, schema_path, sample_sentences, sample_queries):
     '''
     k-shot prompting experiments using the provided model and tokenizer. 
     This function generates SQL queries from text prompts and evaluates their accuracy.
@@ -81,10 +81,11 @@ def exp_kshot(tokenizer, model, inputs, k, schema_path, sample_sentences, sample
         outputs = model.generate(**input_ids, max_new_tokens=MAX_NEW_TOKENS) # You should set MAX_NEW_TOKENS
         response = tokenizer.decode(outputs[0]) # How does the response look like? You may need to parse it
         raw_outputs.append(response)
+        print(response)
+        break
 
         # Extract the SQL query
         extracted_query = extract_sql_query(response)
-        print(f"Extracted query: {extracted_query}")
         extracted_queries.append(extracted_query)
     return raw_outputs, extracted_queries
 
