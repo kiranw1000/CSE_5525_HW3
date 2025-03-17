@@ -208,6 +208,7 @@ def test_inference(args, model, test_loader, model_sql_path, model_record_path):
         generated_ids = model.generate(
             input_ids=encoder_input,
             attention_mask=encoder_mask,
+            decoder_input= decoder_input,
             # max_length=512,  # You can adjust the max_length as needed
             num_beams=5,    # Using beam search with 5 beams
             early_stopping=True
