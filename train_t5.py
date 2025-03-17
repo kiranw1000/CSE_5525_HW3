@@ -210,12 +210,10 @@ def test_inference(args, model, test_loader, model_sql_path, model_record_path):
             attention_mask=encoder_mask,
             decoder_input_ids=decoder_input,
         )['logits']
-        print(logits)
         
-        preds = test_loader.dataset.tokenizer.batch_decode(logits.argmax(-1))
+        preds = test_loader.dataset.tokenizer.batch_decode(logits.argmax(-1), skip_special_tokens=True)
+        print(preds)
         pred_list.extend(preds)
-            
-        print(pred_list)
     if args.mini:
         model_sql_path = model_sql_path.replace('test', 'mini_test')
         model_record_path = model_record_path.replace('test', 'mini_test')
