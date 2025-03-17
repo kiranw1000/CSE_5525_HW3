@@ -176,10 +176,10 @@ def main():
         model_record_path = os.path.join(f'records/gemma_{experiment_name}_dev.pkl')
         sql_em, record_em, record_f1, model_error_msgs, error_rate = eval_outputs(
             eval_x, eval_y,
-            gt_path=gt_sql_path,
-            model_path=model_sql_path,
-            gt_query_records=gt_query_records,
-            model_query_records=model_record_path
+            gt_sql_path,
+            model_sql_path,
+            gt_query_records,
+            model_record_path
         )
         print(f"{eval_split} set results: ")
         print(f"Record F1: {record_f1}, Record EM: {record_em}, SQL EM: {sql_em}")
